@@ -46,7 +46,7 @@ class User extends React.Component {
 
     findAndLoginUser() {
         if (this.state.username && jwts[this.state.username]) {
-            const token = jwts[this.state.username];
+            const token = jwts[this.state.username].jwt;
             this.loginUser(token);
         } else {
             // really should print this to screen
@@ -65,7 +65,11 @@ class User extends React.Component {
     async loginUser(token) {
         console.log('will log in the user named', this.state.username);
         const nexmoApp = await login(token);
-        await this.setState({ nexmoApp: nexmoApp, token: token });
+        await this.setState({
+            nexmoApp: nexmoApp,
+            token: token,
+            userId: jwts[this.state.username].userId,
+        });
     }
 
     renderUserForm() {
@@ -103,13 +107,13 @@ class User extends React.Component {
                     nexmoApp={this.state.nexmoApp}
                     loggedIn={!!this.state.token}
                     username={this.state.username}
+                    userId={this.state.userId}
                 />
             </div>
         );
     }
 
     render() {
-        // used to use this.state.userId
         if (this.state.token) {
             return this.renderWelcome();
         } else {

@@ -11,6 +11,7 @@ class Conversation extends React.Component {
         this.watchConvo = this.watchConvo.bind(this);
         this.registerConvo = this.registerConvo.bind(this);
         this.addEntryToFeed = this.addEntryToFeed.bind(this);
+        this.joinConvo = this.joinConvo.bind(this);
     }
 
     createConversation() {
@@ -36,15 +37,24 @@ class Conversation extends React.Component {
     async registerConvo(conversation) {
         console.log('in registerConvo, about to registerConvo', conversation);
         await this.setState({ conversation });
-        await this.state.conversation
-            .join()
-            .catch(err =>
-                console.log(
-                    'after registering conversation, error when trying to join that conversation:',
-                    err
-                )
-            );
+        await this.joinConvo();
         this.watchConvo();
+    }
+
+    async joinConvo() {
+        if (!this.state.conversation) {
+            throw new Error('Error in joinConvo - no conversation to join');
+        }
+        if (
+            !this.state.conversation.me ||
+            this.state.conversation.me.user.id !== this.props.userId
+        ) {
+            await this.state.conversation
+                .join()
+                .catch(err =>
+                    console.log('error when trying to join conversation:', err)
+                );
+        }
     }
 
     watchConvo() {
