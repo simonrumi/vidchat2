@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { jwts } from './helpers/data';
+import { jwts } from './helpers/data'; // not added to github
 import { getJWT, login } from './helpers/loginTools';
 import Conversation from './Conversation';
 

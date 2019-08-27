@@ -5,6 +5,8 @@ class Conversation extends React.Component {
     constructor(props) {
         super(props);
         this.state = { messageText: '', messageFeed: [] };
+
+        //TODO work out which of these actually need the .bind(this) on them
         this.createConversation = this.createConversation.bind(this);
         this.onUpdateText = this.onUpdateText.bind(this);
         this.onSendText = this.onSendText.bind(this);

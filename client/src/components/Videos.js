@@ -1,7 +1,7 @@
 import React from 'react';
 import OT from '@opentok/client';
 import axios from 'axios';
-import { tokboxInfo } from './helpers/data.js';
+import { tokboxInfo } from './helpers/data.js'; // login info, not added to github
 
 class Videos extends React.Component {
     constructor(props) {
@@ -12,6 +12,8 @@ class Videos extends React.Component {
 
     componentDidMount() {
         OT.setLogLevel(OT.DEBUG);
+
+        // major TODO: need to setup user accounts tied into the ones in User.js
         axios
             .get(tokboxInfo.serverBaseUrl + '/session')
             .then(async res => {
