@@ -4,8 +4,14 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const port = 3001;
+const expressPort = 3001;
 app.use(bodyParser.json());
+
+const fs = require('fs');
+
+// was going to use json-server as a placeholder db, but maybe don't need it
+const jsonServer = require('json-server');
+app.use('/db', jsonServer.router('db.json'));
 
 //nexmo client
 const Nexmo = require('nexmo');
@@ -18,6 +24,48 @@ const nexmo = new Nexmo(
     },
     { debug: true }
 );
+
+//opentok
+const OpenTok = require('opentok');
+const opentok = new OpenTok(
+    process.env.OPENTOK_APIKEY,
+    process.env.OPENTOK_APISECRET
+);
+
+let opentokSession;
+opentok.createSession((err, session) => {
+    if (err) {
+        console.log(err);
+        return;
+    } else {
+        // really we want to store the session id in a db, but putting it in memory
+        // and/or a local file will do for a placeholder
+        opentokSession = session;
+        fs.writeFile(
+            'opentok.json',
+            `{"sessionId": \"${session.sessionId}\"}`,
+            err => {
+                if (err) {
+                    console.log(
+                        'error on saving opentok session id to opentok.json',
+                        err
+                    );
+                } else {
+                    console.log(
+                        `created opentok session and got id ${session.sessionId}`
+                    );
+                }
+            }
+        );
+    }
+});
+
+app.get('/opentokToken', async (req, res) => {
+    const token = await opentokSession.generateToken({
+        expireTime: new Date().getTime() / 1000 + 7 * 24 * 60 * 60, // in one week
+    });
+    res.send(token);
+});
 
 // routes for nexmo user creation
 //for JWT stuff see https://developer.nexmo.com/conversation/guides/jwt-acl
@@ -67,6 +115,6 @@ app.post('/createUser', (req, res) => {
     );
 });
 
-app.listen(port, () => {
-    console.log(`express app listening on port ${port}!`);
+app.listen(expressPort, () => {
+    console.log(`express app listening on port ${expressPort}!`);
 });

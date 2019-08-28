@@ -1,0 +1,24 @@
+{
+    "streams": [
+        {
+            "title": "test 5",
+            "description": "description test 5",
+            "id": 4
+        },
+        {
+            "title": "test 6",
+            "description": "desc 6",
+            "id": 5
+        },
+        {
+            "title": "test reducers",
+            "description": "added reducer code",
+            "id": 6
+        },
+        {
+            "title": "fixed db",
+            "description": "is the db ok now",
+            "id": 7
+        }
+    ]
+}
