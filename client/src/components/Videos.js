@@ -13,7 +13,15 @@ class Videos extends React.Component {
     componentDidMount() {
         OT.setLogLevel(OT.DEBUG);
 
-        // major TODO: need to setup user accounts tied into the ones in User.js
+        // quick experiment
+        // const otSessionId = this.getOpentokSessionId();
+        // const otSession = OT.initSession(tokboxInfo.apiKey, otSessionId);
+        // console.log('got tokbox session', otSession);
+        // this.setState({ session: otSession }, () => this.initOTSession());
+        // return;
+        /// end of experiment
+
+        //this stuff below worked
         axios
             .get(tokboxInfo.serverBaseUrl + '/session')
             .then(async res => {
@@ -37,6 +45,33 @@ class Videos extends React.Component {
                     err
                 )
             );
+    }
+
+    async getOpentokSessionId() {
+        try {
+            const response = await axios.get(
+                tokboxInfo.devServerBaseUrl + '/opentokSessionId'
+            );
+            console.log('got sessionId:', response.body);
+            const sessionId = response.body;
+            return sessionId;
+        } catch (err) {
+            console.log('error getting opentok sessionId:', err);
+        }
+    }
+
+    async getOpentokToken() {
+        try {
+            const response = await axios.get(
+                tokboxInfo.devServerBaseUrl + '/opentokToken'
+            );
+            // response comes back as a string like
+            // T1==NWUxZjQ3YzIyZDUwN2IxOGE3O
+            const otToken = response.body.split['=='][1];
+            return otToken;
+        } catch (err) {
+            console.log('error getting opentok token:', err);
+        }
     }
 
     async initOTSession() {

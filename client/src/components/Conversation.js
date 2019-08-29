@@ -39,6 +39,32 @@ class Conversation extends React.Component {
     async registerConvo(conversation) {
         console.log('in registerConvo, about to registerConvo', conversation);
         await this.setState({ conversation });
+        this.props.nexmoApp.on('member:invited', (member, event) => {
+            // if block from the tutorial...unclear on what the condition is all about
+            // so far haven't seen how we would get into this block
+            //identify the sender and type of conversation.
+            if (event.body.cname.indexOf('CALL') != 0 && member.invited_by) {
+                console.log('*** Invitation received:', event);
+                //accept an invitation.
+                this.props.nexmoApp
+                    .getConversation(event.cid || event.body.cname)
+                    .then(async conversation => {
+                        // quick test: does this get the same convo as the one we have already?
+                        if (conversation !== this.state.conversation) {
+                            console.log(
+                                'WARNING: conversation !== this.state.conversation'
+                            );
+                            await this.joinConvo(conversation);
+                        }
+                    })
+                    .catch(err =>
+                        console.log(
+                            'error after nexmoApp.getConversation():',
+                            err
+                        )
+                    );
+            }
+        });
         await this.joinConvo();
         this.watchConvo();
     }
