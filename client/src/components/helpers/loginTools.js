@@ -23,6 +23,7 @@ export async function getJWT(username) {
 }
 
 export async function login(token) {
+    //QQQQ in tutorial listConversations uses ConversationClient.login()
     const nexmo = new nexmoClient();
     try {
         return await nexmo.login(token); //nexmo.login returns a nexmo app
