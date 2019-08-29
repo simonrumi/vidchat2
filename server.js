@@ -35,12 +35,13 @@ const opentok = new OpenTok(
 let opentokSession;
 opentok.createSession((err, session) => {
     if (err) {
-        console.log(err);
-        return;
+        console.log('error creating opentok session:', err);
     } else {
-        // really we want to store the session id in a db, but putting it in memory
-        // and/or a local file will do for a placeholder
+        // really we want to store the session id in a db, but putting it in memory will do for a placeholder
         opentokSession = session;
+
+        /* writing to a file in lieu of writing to a db...but maybe not needed right now
+        * since we have the session in memory
         fs.writeFile(
             'opentok.json',
             `{"sessionId": \"${session.sessionId}\"}`,
@@ -56,7 +57,7 @@ opentok.createSession((err, session) => {
                     );
                 }
             }
-        );
+        );*/
     }
 });
 
@@ -65,6 +66,10 @@ app.get('/opentokToken', async (req, res) => {
         expireTime: new Date().getTime() / 1000 + 7 * 24 * 60 * 60, // in one week
     });
     res.send(token);
+});
+
+app.get('/opentokSessionId', async (req, res) => {
+    res.send(opentokSession.sessionId);
 });
 
 // routes for nexmo user creation

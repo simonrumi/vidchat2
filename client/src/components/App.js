@@ -8,7 +8,9 @@ class App extends React.Component {
             <div className="ui main container">
                 <div className="ui two column very relaxed stackable grid">
                     <div className="column">
-                        <div className="ui container">Videos would go here</div>
+                        <div className="ui container">
+                            <Videos />
+                        </div>
                     </div>
                     <div className="column">
                         <User />
